@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	android:id="@+id/fl_main_content"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+
+	app:layout_behavior="@string/appbar_scrolling_view_behavior"
+	tools:context="com.dynamsoft.demo.dynamsoftbarcodereaderdemo.MainActivity"
+	tools:showIn="@layout/activity_main">
+
+	<io.fotoapparat.view.CameraView
+		android:id="@+id/foto_camera_view"
+		android:keepScreenOn="true"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"/>
+	<TextView
+		android:id="@+id/tv_barcode_number"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top|center_horizontal"
+		android:layout_marginTop="100dp"
+		android:textColor="#ffffff"
+		android:textSize="20sp"/>
+	<TextView
+		android:id="@+id/tv_flash"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center_horizontal"
+		android:layout_marginBottom="100dp"
+		android:text="Flash ON"
+		android:textColor="#ffffff"
+		android:textSize="20sp"/>
+	<com.dynamsoft.demo.dynamsoftbarcodereaderdemo.HUDCanvasView
+		android:id="@+id/hud_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:background="#00000000" />
+	<RelativeLayout
+		android:id="@+id/view_result_img"
+		android:layout_width="match_parent"
+		android:layout_height="420dp"
+		android:visibility="gone"
+		android:layout_gravity="bottom">
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="40dp"
+			android:background="#fff5f5f5"
+			android:layout_alignParentBottom="true">
+			<TextView
+				android:id="@+id/tv_continue"
+				android:layout_width="80dp"
+				android:layout_height="match_parent"
+				android:layout_alignParentRight="true"
+				android:background="#fff5f5f5"
+				android:textColor="#3E82F9"
+				android:text="Continue"
+				android:layout_marginRight="20dp"
+				android:gravity="center_vertical|right"
+				android:textSize="15sp"/>
+		</RelativeLayout>
+
+		<RelativeLayout
+			android:id="@+id/view_photo"
+			android:layout_width="match_parent"
+			android:layout_height="260dp"
+			android:background="#ffffffff">
+			<ImageView
+				android:id="@+id/iv_result"
+				android:layout_marginTop="7dp"
+				android:layout_marginRight="7dp"
+				android:layout_marginLeft="7dp"
+				android:layout_marginBottom="7dp"
+				android:layout_width="match_parent"
+				android:layout_height="245dp"/>
+		</RelativeLayout>
+	</RelativeLayout>
+</FrameLayout>
