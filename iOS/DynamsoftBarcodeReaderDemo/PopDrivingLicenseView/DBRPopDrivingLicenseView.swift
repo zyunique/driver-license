@@ -19,13 +19,13 @@ class DBRPopDrivingLicenseView: UIView {
     var frontView:DBRDrivingLicenseView!
     var completeDelegate: CompleteDelegate?
     private let _viewBG = UIView()
-    private var _bgRect = CGRect(x: 0, y: 0, width: FullScreenSize.height, height: FullScreenSize.width)
+    private var _bgRect = CGRect(x: 0, y: 0, width: FullScreenSize.width, height: FullScreenSize.height)
     private var isFirstHide = true
     
     // MARK: - init
     init(frame: CGRect,barcodeResults:BarcodeData) {
-        super.init(frame: _bgRect)
-        initialFromXib(frame:frame,barcodeResult:barcodeResults)
+        super.init(frame: frame)
+        initialFromXib(frame: frame,barcodeResult:barcodeResults)
     }
     
     required init?(coder aDecoder: NSCoder) {

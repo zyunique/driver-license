@@ -11,6 +11,7 @@ import AVFoundation
 
 //you can init DynamsoftBarcodeReader with a license or licenseKey
 let kLicense = "Put your license here"
+let kLicenseKey = "Put your license key here"
 
 let FullScreenSize                  = UIScreen.main.bounds
 var FullScreenSizeWidth             = UIScreen.main.bounds.width
@@ -34,17 +35,30 @@ class ViewController: UIViewController {
     var animationTimer:Timer!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view.
         UIApplication.shared.isIdleTimerDisabled = true
         //register notification for UIApplicationDidBecomeActiveNotification
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
         
         //init DbrManager with Dynamsoft Barcode Reader mobile license
-        dbrManager = DbrManager(license:kLicense)
-
+        let isInitWithLicenseKey = false//Choose an initialization method
+        if(!isInitWithLicenseKey)
+        {
+            dbrManager = DbrManager(license:kLicense)
+        }
+        else
+        {
+            dbrManager = DbrManager(serverURL: "", licenseKey: kLicenseKey)
+            dbrManager?.setServerLicenseVerificationCallback(sender: self, callBack: #selector(onVerificationCallBack(isSuccess:error:)))
+        }
+            
         dbrManager?.setRecognitionCallback(sender: self, callBack: #selector(onReadImageBufferComplete))
         dbrManager?.setVideoSession()
-        dbrManager?.startVideoSession()
+        if(!isInitWithLicenseKey)
+        {
+            dbrManager?.startVideoSession()
+        }
         self.configInterface()
     }
     
@@ -86,6 +100,39 @@ class ViewController: UIViewController {
             
             self.turnFlashOn(on: false)
             dbrManager?.isPauseFramesComing = true
+        }
+    }
+    
+    @objc func onVerificationCallBack(isSuccess:NSNumber, error:NSError?)
+    {
+        if(isSuccess.boolValue)
+        {
+            self.dbrManager?.startVideoSession()
+        }
+        else
+        {
+            var msg:String? = nil
+            if(error != nil)
+            {
+                msg = error!.userInfo[NSLocalizedDescriptionKey] as? String
+                if(msg == nil)
+                {
+                    msg = error?.localizedDescription
+                }
+            }
+            let ac = UIAlertController(title: "Server license verify failed", message: msg,preferredStyle: .alert)
+            self.customizeAC(ac:ac)
+            let okButton = UIAlertAction(title: "Try again", style: .default, handler: {
+                action in
+                self.dbrManager?.connectServerAfterInit(serverURL: "", licenseKey: kLicenseKey)
+            })
+            ac.addAction(okButton)
+            let cancelButton = UIAlertAction(title: "Cancel with local License", style: .cancel, handler: {
+                action in
+                self.dbrManager?.startVideoSession()
+            })
+            ac.addAction(cancelButton)
+            self.present(ac, animated: false, completion: nil)
         }
     }
     
@@ -135,7 +182,7 @@ class ViewController: UIViewController {
                                               typeDes: typeDes,
                                               text: result.map({$0.barcodeText!}),
                                               time: String(timeInterval))
-                let tFrm =  CGRect(x: 0, y: StatusH + NavigationH, width: FullScreenSizeWidth, height: FullScreenSizeHeight - StatusH - NavigationH)
+                let tFrm =  CGRect(x: 0, y: 0, width: FullScreenSizeWidth, height: FullScreenSizeHeight)
                 
                 self.dbrManager?.isCurrentFrameDecodeFinished = false
                 let alertView = DBRPopDrivingLicenseView(frame: tFrm, barcodeResults: barcodeData)
